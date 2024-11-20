@@ -1,250 +1,228 @@
-/*document.getElementById("formCadastrarAeronave")?.addEventListener("submit", function(event) {
+// Função para cadastrar uma nova aeronave
+document.getElementById('formCadastrarAeronave').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const modelo = document.getElementById("modelo").value;
-    const fabricante = document.getElementById("fabricante").value;
-    const ano_fabricacao = document.getElementById("ano_fabricacao").value;
-    const matricula = document.getElementById("matricula").value;
+    const modelo = document.getElementById('modelo').value;
+    const fabricante = document.getElementById('fabricante').value;
+    const ano_fabricacao = document.getElementById('ano_fabricacao').value;
+    const matricula = document.getElementById('matricula').value;
 
-    const dadosAeronave = {
+    const data = {
         modelo,
         fabricante,
         ano_fabricacao,
         matricula
     };
 
-    fetch('/salvar_aeronave', {
+    fetch('http://localhost:8000/aeronaves', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(dadosAeronave)
+        body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(data => {
-        alert("Aeronave cadastrada com sucesso!");
-        document.getElementById("formCadastrarAeronave").reset();
+        console.log('Aeronave cadastrada com sucesso:', data);
+        alert('Aeronave cadastrada com sucesso!');
+        listarAeronaves(); // Atualiza a lista de aeronaves após cadastro
     })
     .catch(error => {
-        alert("Erro ao cadastrar a aeronave.");
-        console.error(error);
+        console.error('Erro ao cadastrar aeronave:', error);
+        alert('Erro ao cadastrar aeronave.');
     });
 });
 
-document.getElementById("formCadastrarOrdemServico")?.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const descricao = document.getElementById("descricao").value;
-    const status = document.getElementById("status").value;
-    const aeronave_id = document.getElementById("aeronave_id").value;
-
-    const dadosOrdem = {
-        descricao,
-        status,
-        aeronave_id
-    };
-
-    fetch('/salvar_ordem', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dadosOrdem)
-    })
+// Função para listar todas as aeronaves
+function listarAeronaves() {
+    fetch('http://localhost:8000/aeronaves')
     .then(response => response.json())
     .then(data => {
-        alert("Ordem de Serviço cadastrada com sucesso!");
-        document.getElementById("formCadastrarOrdemServico").reset();
+        const aeronavesList = document.getElementById('aeronavesList');
+        aeronavesList.innerHTML = ''; // Limpa a lista atual
+
+        if (data.message) {
+            aeronavesList.innerHTML = `<p>${data.message}</p>`;
+        } else {
+            data.forEach(aeronave => {
+                const div = document.createElement('div');
+                div.classList.add('aeronave');
+                div.innerHTML = `
+                    <p>ID: ${aeronave.id}</p>
+                    <p>Modelo: ${aeronave.modelo}</p>
+                    <p>Fabricante: ${aeronave.fabricante}</p>
+                    <p>Ano de Fabricação: ${aeronave.ano_fabricacao}</p>
+                    <p>Matrícula: ${aeronave.matricula}</p>
+                    <hr>
+                `;
+                aeronavesList.appendChild(div);
+            });
+        }
     })
     .catch(error => {
-        alert("Erro ao cadastrar a ordem de serviço.");
-        console.error(error);
+        console.error('Erro ao listar aeronaves:', error);
+        alert('Erro ao listar aeronaves.');
     });
-});
+}
 
-document.getElementById("formRemoverAeronave")?.addEventListener("submit", function(event) {
+// Função para atualizar a aeronave
+document.getElementById('formAtualizarAeronave').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const id = document.getElementById("id").value;
+    const id = document.getElementById('id').value; // ID da aeronave que será atualizada
+    const modelo = document.getElementById('modelo').value;
+    const fabricante = document.getElementById('fabricante').value;
+    const ano_fabricacao = document.getElementById('ano_fabricacao').value;
+    const matricula = document.getElementById('matricula').value;
 
-    fetch(`/remover_aeronave/${id}`, {
-        method: 'DELETE'
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert("Aeronave removida com sucesso!");
-        document.getElementById("formRemoverAeronave").reset();
-    })
-    .catch(error => {
-        alert("Erro ao remover a aeronave.");
-        console.error(error);
-    });
-});
-
-document.getElementById("formAtualizarAeronave")?.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const id = document.getElementById("id").value;
-    const modelo = document.getElementById("modelo").value;
-    const fabricante = document.getElementById("fabricante").value;
-    const ano = document.getElementById("ano").value;
-    const matricula = document.getElementById("matricula").value;
-
-    const dadosAeronaveAtualizada = {
+    const data = {
         modelo,
         fabricante,
-        ano,
+        ano_fabricacao,
         matricula
     };
 
-    fetch(`/atualizar_aeronave/${id}`, {
+    fetch(`http://localhost:8000/aeronaves/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(dadosAeronaveAtualizada)
+        body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(data => {
-        alert("Aeronave atualizada com sucesso!");
-        document.getElementById("formAtualizarAeronave").reset();
+        console.log('Aeronave atualizada com sucesso:', data);
+        alert('Aeronave atualizada com sucesso!');
+        listarAeronaves(); // Atualiza a lista de aeronaves após atualização
     })
     .catch(error => {
-        alert("Erro ao atualizar a aeronave.");
-        console.error(error);
+        console.error('Erro ao atualizar aeronave:', error);
+        alert('Erro ao atualizar aeronave.');
     });
 });
 
-document.getElementById("formDeletarOrdemServico")?.addEventListener("submit", function(event) {
+
+// Função para remover uma aeronave
+document.getElementById('formRemoverAeronave').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const id = document.getElementById("id").value;
+    const id = document.getElementById('removerId').value;  // Alterando para 'removerId'
 
-    fetch(`/deletar_ordem_servico/${id}`, {
+    fetch(`http://localhost:8000/aeronaves/${id}`, {
         method: 'DELETE'
     })
     .then(response => response.json())
     .then(data => {
-        alert("Ordem de serviço deletada com sucesso!");
-        document.getElementById("formDeletarOrdemServico").reset();
+        console.log('Aeronave removida com sucesso:', data);
+        alert('Aeronave removida com sucesso!');
+        listarAeronaves(); // Atualiza a lista de aeronaves após remoção
     })
     .catch(error => {
-        alert("Erro ao deletar a ordem de serviço.");
-        console.error(error);
+        console.error('Erro ao remover aeronave:', error);
+        alert('Erro ao remover aeronave.');
     });
 });
 
-*/
+document.getElementById('formCadastrarOrdemServico').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-function getAeronaves() {
-    const aeronaves = JSON.parse(localStorage.getItem("aeronaves")) || [];
-    return aeronaves;
-}
+    const descricao = document.getElementById('descricao').value;
+    const status = document.getElementById('status').value;
+    const aeronave_id = document.getElementById('aeronave_id').value;
 
-function saveAeronaves(aeronaves) {
-    localStorage.setItem("aeronaves", JSON.stringify(aeronaves));
-}
+    // Verifique se os campos estão preenchidos
+    if (!descricao || !status || !aeronave_id) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
 
-function listAeronaves() {
-    const aeronaves = getAeronaves();
-    const aeronavesList = document.getElementById("listaAeronaves");
-    aeronavesList.innerHTML = '';
+    // Enviar os dados via fetch
+    fetch('/api/ordemServico/store', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            descricao: descricao,
+            status: status,
+            aeronave_id: aeronave_id
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao cadastrar ordem de serviço:', error);
+    });
+});
 
-    aeronaves.forEach((aeronave, index) => {
-        const li = document.createElement("li");
-        li.textContent = `Modelo: ${aeronave.modelo}, Fabricante: ${aeronave.fabricante}, Ano: ${aeronave.ano_fabricacao}, Matrícula: ${aeronave.matricula}`;
-        
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Remover";
-        removeButton.onclick = function() {
-            removeAeronave(index);
-        };
-        li.appendChild(removeButton);
-        aeronavesList.appendChild(li);
+
+
+// Função para listar todas as ordens de serviço
+function listarOrdensServico() {
+    fetch('http://localhost:8000/api/ordemServico')
+    .then(response => response.json())
+    .then(data => {
+        console.log('Dados recebidos:', data);  // Adicionando log para depuração
+        const ordensServicoList = document.getElementById('ordensServicoList');
+        ordensServicoList.innerHTML = ''; // Limpa a lista atual
+
+        if (data.message) {
+            ordensServicoList.innerHTML = `<p>${data.message}</p>`;
+        } else {
+            data.forEach(ordem => {
+                const div = document.createElement('div');
+                div.classList.add('ordemServico');
+                div.innerHTML = `
+                    <p>ID: ${ordem.id}</p>
+                    <p>Descrição: ${ordem.descricao}</p>
+                    <p>Status: ${ordem.status}</p>
+                    <p>Aeronave ID: ${ordem.aeronave_id}</p>
+                    <hr>
+                `;
+                ordensServicoList.appendChild(div);
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao listar ordens de serviço:', error);
+        alert('Erro ao listar ordens de serviço.');
     });
 }
 
-function removeAeronave(index) {
-    const aeronaves = getAeronaves();
-    aeronaves.splice(index, 1);
-    saveAeronaves(aeronaves);
-    listAeronaves();
-}
 
-document.getElementById("formCadastrarAeronave")?.addEventListener("submit", function(event) {
+// Função para deletar uma ordem de serviço
+document.getElementById('formDeletarOrdemServico').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const modelo = document.getElementById("modelo").value;
-    const fabricante = document.getElementById("fabricante").value;
-    const ano_fabricacao = document.getElementById("ano_fabricacao").value;
-    const matricula = document.getElementById("matricula").value;
+    // Captura o valor do campo de ID
+    const id = document.getElementById('id').value;
+    console.log("ID capturado: ", id);  // Para depuração, veja se o valor está sendo capturado
 
-    const aeronave = { modelo, fabricante, ano_fabricacao, matricula };
+    // Verifica se o ID foi fornecido
+    if (!id) {
+        alert("ID não fornecido.");
+        return;  // Impede o envio da requisição se o ID não for fornecido
+    }
 
-    const aeronaves = getAeronaves();
-    aeronaves.push(aeronave);
-    saveAeronaves(aeronaves);
-
-    alert("Aeronave cadastrada com sucesso!");
-    document.getElementById("formCadastrarAeronave").reset();
-    listAeronaves();
-});
-
-function getOrdensDeServico() {
-    const ordens = JSON.parse(localStorage.getItem("ordens")) || [];
-    return ordens;
-}
-
-function saveOrdensDeServico(ordens) {
-    localStorage.setItem("ordens", JSON.stringify(ordens));
-}
-
-function listOrdensDeServico() {
-    const ordens = getOrdensDeServico();
-    const ordensList = document.getElementById("listaOrdensDeServico");
-    ordensList.innerHTML = '';
-
-    ordens.forEach((ordem, index) => {
-        const li = document.createElement("li");
-        li.textContent = `ID: ${ordem.id}, Aeronave: ${ordem.aeronave}, Status: ${ordem.status}, Data: ${ordem.data}`;
-
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Remover";
-        removeButton.onclick = function() {
-            removeOrdemDeServico(index);
-        };
-        li.appendChild(removeButton);
-        ordensList.appendChild(li);
+    // Realiza a requisição DELETE com o ID
+    fetch(`http://localhost:8000/ordens-servico/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Ordem de serviço deletada com sucesso:', data);
+        alert('Ordem de serviço deletada com sucesso!');
+        listarOrdensServico(); // Atualiza a lista de ordens de serviço após remoção
+    })
+    .catch(error => {
+        console.error('Erro ao deletar ordem de serviço:', error);
+        alert('Erro ao deletar ordem de serviço.');
     });
-}
-
-function removeOrdemDeServico(index) {
-    const ordens = getOrdensDeServico();
-    ordens.splice(index, 1);
-    saveOrdensDeServico(ordens);
-    listOrdensDeServico();
-}
-
-document.getElementById("formCadastrarOrdemDeServico")?.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const id = document.getElementById("id_origem").value;
-    const aeronave = document.getElementById("aeronave_origem").value;
-    const status = document.getElementById("status_origem").value;
-    const data = document.getElementById("data_origem").value;
-
-    const ordem = { id, aeronave, status, data };
-
-    const ordens = getOrdensDeServico();
-    ordens.push(ordem);
-    saveOrdensDeServico(ordens);
-
-    alert("Ordem de serviço cadastrada com sucesso!");
-    document.getElementById("formCadastrarOrdemDeServico").reset();
-    listOrdensDeServico();
 });
 
-window.onload = function() {
-    listAeronaves();
-    listOrdensDeServico();
-};
+
+
