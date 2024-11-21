@@ -7,13 +7,11 @@ class OrdemServico {
         $this->pdo = $pdo;
     }
 
-    // Método para obter todas as ordens de serviço
     public function getAll() {
         $stmt = $this->pdo->query("SELECT * FROM ordens_servico");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Método para salvar uma nova ordem de serviço
     public function salvar($descricao, $status, $aeronave_id) {
         try {
             $sql = "INSERT INTO ordens_servico (descricao, status, aeronave_id) 
@@ -37,7 +35,6 @@ class OrdemServico {
         }
     }
 
-    // Método para remover a ordem de serviço
     public function remover($id) {
         $sql = "DELETE FROM ordens_servico WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);

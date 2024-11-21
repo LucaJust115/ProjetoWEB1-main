@@ -25,7 +25,7 @@ document.getElementById('formCadastrarAeronave').addEventListener('submit', func
     .then(data => {
         console.log('Aeronave cadastrada com sucesso:', data);
         alert('Aeronave cadastrada com sucesso!');
-        listarAeronaves(); // Atualiza a lista de aeronaves após cadastro
+        listarAeronaves(); 
     })
     .catch(error => {
         console.error('Erro ao cadastrar aeronave:', error);
@@ -39,7 +39,7 @@ function listarAeronaves() {
     .then(response => response.json())
     .then(data => {
         const aeronavesList = document.getElementById('aeronavesList');
-        aeronavesList.innerHTML = ''; // Limpa a lista atual
+        aeronavesList.innerHTML = ''; 
 
         if (data.message) {
             aeronavesList.innerHTML = `<p>${data.message}</p>`;
@@ -69,7 +69,7 @@ function listarAeronaves() {
 document.getElementById('formAtualizarAeronave').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const id = document.getElementById('id').value; // ID da aeronave que será atualizada
+    const id = document.getElementById('id').value; 
     const modelo = document.getElementById('modelo').value;
     const fabricante = document.getElementById('fabricante').value;
     const ano_fabricacao = document.getElementById('ano_fabricacao').value;
@@ -93,7 +93,7 @@ document.getElementById('formAtualizarAeronave').addEventListener('submit', func
     .then(data => {
         console.log('Aeronave atualizada com sucesso:', data);
         alert('Aeronave atualizada com sucesso!');
-        listarAeronaves(); // Atualiza a lista de aeronaves após atualização
+        listarAeronaves(); 
     })
     .catch(error => {
         console.error('Erro ao atualizar aeronave:', error);
@@ -106,7 +106,7 @@ document.getElementById('formAtualizarAeronave').addEventListener('submit', func
 document.getElementById('formRemoverAeronave').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const id = document.getElementById('removerId').value;  // Alterando para 'removerId'
+    const id = document.getElementById('removerId').value;  
 
     fetch(`http://localhost:8000/aeronaves/${id}`, {
         method: 'DELETE'
@@ -115,7 +115,7 @@ document.getElementById('formRemoverAeronave').addEventListener('submit', functi
     .then(data => {
         console.log('Aeronave removida com sucesso:', data);
         alert('Aeronave removida com sucesso!');
-        listarAeronaves(); // Atualiza a lista de aeronaves após remoção
+        listarAeronaves(); 
     })
     .catch(error => {
         console.error('Erro ao remover aeronave:', error);
@@ -130,13 +130,11 @@ document.getElementById('formCadastrarOrdemServico').addEventListener('submit', 
     const status = document.getElementById('status').value;
     const aeronave_id = document.getElementById('aeronave_id').value;
 
-    // Verifique se os campos estão preenchidos
     if (!descricao || !status || !aeronave_id) {
         alert('Por favor, preencha todos os campos.');
         return;
     }
 
-    // Enviar os dados via fetch
     fetch('/api/ordemServico/store', {
         method: 'POST',
         headers: {
@@ -166,9 +164,9 @@ function listarOrdensServico() {
     fetch('http://localhost:8000/api/ordemServico')
     .then(response => response.json())
     .then(data => {
-        console.log('Dados recebidos:', data);  // Adicionando log para depuração
+        console.log('Dados recebidos:', data);  
         const ordensServicoList = document.getElementById('ordensServicoList');
-        ordensServicoList.innerHTML = ''; // Limpa a lista atual
+        ordensServicoList.innerHTML = ''; 
 
         if (data.message) {
             ordensServicoList.innerHTML = `<p>${data.message}</p>`;
@@ -198,17 +196,14 @@ function listarOrdensServico() {
 document.getElementById('formDeletarOrdemServico').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    // Captura o valor do campo de ID
     const id = document.getElementById('id').value;
-    console.log("ID capturado: ", id);  // Para depuração, veja se o valor está sendo capturado
+    console.log("ID capturado: ", id);  
 
-    // Verifica se o ID foi fornecido
     if (!id) {
         alert("ID não fornecido.");
-        return;  // Impede o envio da requisição se o ID não for fornecido
+        return;  
     }
 
-    // Realiza a requisição DELETE com o ID
     fetch(`http://localhost:8000/ordens-servico/${id}`, {
         method: 'DELETE'
     })
@@ -216,7 +211,7 @@ document.getElementById('formDeletarOrdemServico').addEventListener('submit', fu
     .then(data => {
         console.log('Ordem de serviço deletada com sucesso:', data);
         alert('Ordem de serviço deletada com sucesso!');
-        listarOrdensServico(); // Atualiza a lista de ordens de serviço após remoção
+        listarOrdensServico(); 
     })
     .catch(error => {
         console.error('Erro ao deletar ordem de serviço:', error);

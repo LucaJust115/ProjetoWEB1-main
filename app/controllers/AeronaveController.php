@@ -10,40 +10,37 @@ class AeronaveController {
     }
 
     public function store() {
-        // Capturar dados do corpo da requisição
         $data = json_decode(file_get_contents("php://input"), true);
 
-        // Validar os dados recebidos
         if (isset($data['modelo'], $data['fabricante'], $data['ano_fabricacao'], $data['matricula'])) {
             $modelo = $data['modelo'];
             $fabricante = $data['fabricante'];
             $ano_fabricacao = $data['ano_fabricacao'];
             $matricula = $data['matricula'];
 
-            // Tentar salvar os dados no banco de dados
             if ($this->aeronave->salvar($modelo, $fabricante, $ano_fabricacao, $matricula)) {
                 echo json_encode(["message" => "Aeronave cadastrada com sucesso!"]);
             } else {
-                http_response_code(500); // Erro interno do servidor
+                http_response_code(500); 
                 echo json_encode(["message" => "Erro ao cadastrar aeronave."]);
             }
         } else {
-            http_response_code(400); // Erro de requisição
+            http_response_code(400); 
             echo json_encode(["message" => "Dados incompletos."]);
         }
     }
 
     public function index() {
-        // Obter todas as aeronaves
+        
         $aeronaves = $this->aeronave->getAll();
     
-        // Verificar se há aeronaves no banco de dados
+        
         if ($aeronaves) {
-            // Retornar os dados como JSON
+            
             echo json_encode($aeronaves);
         } else {
-            // Caso não encontre aeronaves, retornar uma mensagem
-            http_response_code(404); // Código de "não encontrado"
+            
+            http_response_code(404); 
             echo json_encode(["message" => "Nenhuma aeronave encontrada."]);
         }
     }
